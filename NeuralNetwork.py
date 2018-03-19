@@ -1,14 +1,11 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import numpy.random
 
-
-# game setup
 
 # neural network config
 learning_rate = 0.001
-training_epochs = 15
-
 n_input_neurons = 9
 n_hidden_neurons_layer_1 = 18
 n_hidden_neurons_layer_2 = 18
@@ -32,25 +29,38 @@ biases = {
 	'out': tf.Variable(tf.random_normal([n_output_neurons]))
 }
 
-def multi_layer_perceptron(x, weights, biases):
+def create_multi_layer_perceptron(x, weights, biases):
+	# hidden layer 1
 	layer_1 = tf.matmul(x, weights['h1']) + biases['b1']
 	layer_1 = tf.nn.relu(layer_1)
+	# hidden layer 2
 	layer_2 = tf.matmul(layer_1, weights['h2']) + biases['b2']
 	layer_2 = tf.nn.relu(layer_2)
+	# output layer
 	layer_out = tf.matmul(layer_2, weights['out']) + biases['out']
 	return layer_out
 
-X = tf.placeholder('float', shape=(None, n_input_neurons)
-y = tf.placeholder('float', shape=(None, n_output_neurons)
+def train_network():
 
-predictions = multi_layer_perceptron(X, weights, biases)
+	X = tf.placeholder('float', shape=(None, n_input_neurons))
+	y = tf.placeholder('float', shape=(None, n_output_neurons))
 
-# possibly switch cost function in the future
-loss = tf.nn.softmax_cross_entropy_with_logits(predictions, y)
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
-train = optimizer.minimize(loss)
+	network = create_multi_layer_perceptron(X, weights, biases)
 
+	# possibly switch cost function in the future
+	loss = tf.nn.softmax_cross_entropy_with_logits(predictions, y)
+	optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+	train = optimizer.minimize(loss)
 
+# game setup
+# generates a list of all game states, actions, and rewards
+def generate_game_states():
+	# rewards
+	win = 10
+	tie = 5
+	loss = 0
+	# randomly choose which side starts
+	starting_side = random.choose([-1, 1])
 
 
 
